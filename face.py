@@ -166,8 +166,10 @@ class Face:
         self.mfile.add_command(label="Select dir...", command=self.ask_dir)
         self.mfile.add_command(label="Select default folder...",
                                command=self.ask_dir)
-        self.medit.add_command(label="Clear",
-                               command=self.clear_list)
+        self.mfile.add_command(label="Quit", command=self.on_delete,
+                               accelerator="Ctrl+Q", underline=1)
+        self.root.bind_all("<Control-q>", lambda x: self.on_delete())
+        self.medit.add_command(label="Clear", command=self.clear_list)
 
     def get_url(self, evt=None):
         self.sstatus("Wait...")
