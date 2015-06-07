@@ -234,7 +234,13 @@ class Face:
                         "delete preserved page?",
                         icon="question", title="Install") is False:
                     return
+        next_focus = self.tree.next(iid)
+        if not next_focus:
+            next_focus = self.tree.prev(iid)
         self.tree.delete(iid)
+        if next_focus:
+            self.tree.focus(item=next_focus)
+            self.tree.selection_add(next_focus)
         self.remember.pop(iid, None)
         page = self.pages.pop(iid)
         if "contains" in page:
@@ -247,8 +253,6 @@ class Face:
                     i += 1
 
     def enter_page(self, evt=None):
-        if self.locked:
-            return
         self.sstatus("Wait...")
         iid = self.tree.focus()
         if not self.pages[iid]["entered"]:
