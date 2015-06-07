@@ -68,12 +68,8 @@ class Face:
         self.add_control(root)
         pw = ttk.Panedwindow(root, orient="vertical")
         self.pw = pw
-        frame = ttk.Frame(pw)
-        self.add_tree(frame)
-        pw.add(frame)
-        frame = ttk.Frame(pw)
-        self.add_text(frame)
-        pw.add(frame)
+        pw.add(self.make_tree())
+        pw.add(self.make_text_field())
         pw.grid(column=0, row=1, columnspan=2, sticky="senw")
         self.pw.sashpos(0, self.cfg.get("sashpos"))
         self.sz = ttk.Sizegrip(root)
@@ -118,7 +114,8 @@ class Face:
         self.dirlab = ttk.Label(self.control, textvariable=self.dirname)
         self.dirlab.grid(row=1, column=1, sticky="ew")
 
-    def add_tree(self, frame):
+    def make_tree(self):
+        frame = ttk.Frame(self.pw)
         frame.grid_columnconfigure(0, weight=1)
         frame.grid_rowconfigure(0, weight=1)
         self.tree = ttk.Treeview(frame, selectmode="extended")
@@ -141,8 +138,10 @@ class Face:
         self.tree.tag_configure("file", foreground="blue", font="Monospace 12")
         self.tree.tag_configure("bmk", foreground="red")
         self.tree.tag_configure("folder", font="Times 14 bold")
+        return frame
 
-    def add_text(self, frame):
+    def make_text_field(self):
+        frame = ttk.Frame(self.pw)
         frame.grid_columnconfigure(0, weight=1)
         frame.grid_rowconfigure(0, weight=1)
         text = Text(frame, state="disabled", wrap="word",
@@ -154,6 +153,7 @@ class Face:
         text["yscrollcommand"] = lambda f, l: autoscroll(vsb, f, l)
         self.text_curinfo = None
         text.tag_configure("h1", font="Times 16 bold", relief="raised")
+        return frame
 
     def add_menu(self):
         top = self.tree.winfo_toplevel()
