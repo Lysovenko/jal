@@ -62,50 +62,6 @@ class SearchParser(HTMLParser):
         pass
 
 
-class GoogleParser(HTMLParser):
-    "parses Gogle search result"
-    def __init__(self, data):
-        di = {}
-        if hexversion >= 0x030200f0:
-            di["strict"] = False
-        HTMLParser.__init__(self, **di)
-        self.found = []
-        self.is_topen = False
-        self.is_aopen = False
-        self.curdata = {}
-        self.feed(data)
-        self.close()
-
-    def handle_starttag(self, tag, attrs):
-        dattrs = dict(attrs)
-        if self.is_topen:
-            if tag == "a":
-                href = dattrs.get("href", "")
-                if href.startswith("http://www.ex.ua/") and \
-                   href[17:].isdigit():
-                    self.curdata["link"] = href[16:]
-                    self.is_aopen = True
-        if tag == "h3":
-            if dattrs.get("class") == "r":
-                self.is_topen = True
-
-    def handle_endtag(self, tag):
-        if tag == "h3":
-            self.is_topen = False
-            if self.curdata:
-                self.found.append(self.curdata)
-                self.curdata = {}
-        if tag == "a":
-            self.is_aopen = False
-
-    def handle_data(self, data):
-        if self.is_aopen:
-            try:
-                self.curdata["text"] += data
-            except KeyError:
-                self.curdata["text"] = data
-
-
 _MEDIA_TYPES = {"video": "flv", "audio": "mp3"}
 
 

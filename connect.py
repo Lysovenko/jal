@@ -18,7 +18,7 @@ Internet connections
 from urllib.request import urlopen, Request
 from urllib.parse import urlencode
 from urllib.error import HTTPError, URLError
-from parser import SearchParser, GoogleParser, parse_dpage
+from parser import SearchParser, parse_dpage
 import os.path as osp
 from time import time, mktime, strptime, timezone
 
@@ -31,30 +31,6 @@ def search(what):
     del o
     if sp.found:
         return sp.found
-    founds = []
-    for start in range(0, 100, 10):
-        url = "http://www.google.com.ua/search?%s" % \
-            urlencode([("hl", "ok"), ("source", "hp"), ("ie", "utf-8"),
-                       ("q", "%s site:ex.ua" % what), ("btnG", "Пошук Google"),
-                       ("start", start)])
-        r = Request(url)
-        r.add_header("User-agent",
-                     "Mozilla/5.0 (X11; Linux x86_64; rv:18.0) "
-                     "Gecko/20100101 Firefox/18.1")
-        try:
-            o = urlopen(r)
-        except Exception:
-            print(r.headers)
-            print(r.get_full_url())
-            print(r.get_host())
-            print(r.header_items())
-            print(r.__dict__)
-        text = o.read().decode()
-        sp = GoogleParser(text)
-        if not sp.found:
-            break
-        founds += sp.found
-    return founds
 
 
 def dp_get(index):
