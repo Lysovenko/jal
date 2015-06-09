@@ -23,7 +23,7 @@ import os.path as osp
 from time import time, mktime, strptime, timezone
 
 
-def search(what):
+def web_search(what):
     r = Request("http://ex.ua/search?%s" % urlencode([("s", what),
                                                       ("per", 100)]))
     o = urlopen(r)

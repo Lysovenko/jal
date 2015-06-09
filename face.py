@@ -18,7 +18,7 @@ Making a face of the application
 from tkinter.tix import Tk, Menu, PhotoImage
 from tkinter import ttk, Text, StringVar, messagebox
 from tkinter.filedialog import askdirectory
-from connect import search, dp_get, load_file
+from connect import web_search, dp_get, load_file
 from parser import InfoParser
 from os.path import expanduser, isdir, join, dirname
 from os import makedirs
@@ -174,7 +174,9 @@ class Face:
     def get_url(self, evt=None):
         self.sstatus("Wait...")
         pages = self.pages
-        sr = search(self.entry.get())
+        sr = web_search(self.entry.get())
+        if sr is None:
+            return
         for i in sr:
             l = i["link"]
             if l not in pages:
