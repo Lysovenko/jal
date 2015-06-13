@@ -15,8 +15,7 @@
 Making a face of the application
 """
 
-from tkinter.tix import Tk, Menu, PhotoImage
-from tkinter import ttk, Text, StringVar, messagebox
+from tkinter import Tk, Menu, PhotoImage, ttk, Text, StringVar, messagebox
 from tkinter.filedialog import askdirectory
 from connect import web_search, dp_get, load_file
 from parser import InfoParser
