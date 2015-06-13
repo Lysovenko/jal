@@ -36,7 +36,7 @@ def autoscroll(sbar, first, last):
 
 class Config(dict):
     def __init__(self):
-        self.path = expanduser("~/.ex_ua_get")
+        self.path = expanduser("~/.jml")
         cfgl = []
         try:
             with open(self.path) as fp:
@@ -56,7 +56,7 @@ class Config(dict):
 
 class Face:
     def __init__(self, root):
-        root.title("EX-UA media loader")
+        root.title("JML media loader")
         root.protocol("WM_DELETE_WINDOW", self.on_delete)
         self.root = root
         root.grid_columnconfigure(0, weight=1)
@@ -86,12 +86,14 @@ class Face:
                      PhotoImage(file=join(dirname(__file__), "favicon.gif")))
 
     def do_remember(self):
-        for l, t in self.remember.items():
-            self.pages[l] = {"entered": False}
+        for i, t in self.remember.items():
+            self.pages[i] = {"entered": False}
             tags = ("page", "bmk")
-            if type(t) == tuple:
-                t, f = t
-                self.pages[l]["folder"] = f
+            s, p, t, f = t + (None,) * (4 - len(t))
+            self.pages[i]["site"] = s
+            self.pages[i]["page"] = p
+            if f is not None:
+                self.pages[i]["folder"] = f
                 tags += ("folder",)
             self.tree.insert("", "end", l, text=t, tags=tags)
 
@@ -177,11 +179,13 @@ class Face:
         if sr is None:
             return
         for i in sr:
-            l = i["link"]
-            if l not in pages:
-                self.tree.insert("", "end", l, text=i["text"],
+            h = i["hash"]
+            if h not in pages:
+                self.tree.insert("", "end", h, text=i["title"],
                                  tags=("page",))
-                pages[l] = {"entered": False}
+                pages[h] = {"entered": False}
+                pages[h]["site"] = i["site"]
+                pages[h]["page"] = i["page"]
         self.sstatus("OK")
 
     def remember_pg(self, evt=None):
@@ -192,7 +196,12 @@ class Face:
             self.remember.pop(iid)
         else:
             self.tree.item(iid, tags=("page", "bmk"))
-            self.remember[iid] = self.tree.item(iid)["text"]
+            pg = self.pages[iid]
+            s = pg["site"]
+            p = pg["page"]
+            f = pg.get("folder")
+            t = self.tree.item(iid)["text"]
+            self.remember[iid] = (s, p, t, f)
 
     def clear_list(self, evt=None):
         for i in self.pages:

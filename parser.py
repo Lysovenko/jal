@@ -39,7 +39,8 @@ class SearchParser(HTMLParser):
             if tag == "a":
                 href = dattrs.get("href", "")
                 if href.startswith("/") and href[1:].isdigit():
-                    self.curdata["link"] = href
+                    self.curdata["page"] = href
+                    self.curdata["site"] = "ex-ua"
                     self.is_aopen = True
         pass
 
@@ -56,9 +57,9 @@ class SearchParser(HTMLParser):
     def handle_data(self, data):
         if self.is_aopen:
             try:
-                self.curdata["text"] += data
+                self.curdata["title"] += data
             except KeyError:
-                self.curdata["text"] = data
+                self.curdata["title"] = data
         pass
 
 

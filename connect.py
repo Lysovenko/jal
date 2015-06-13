@@ -21,6 +21,7 @@ from urllib.error import HTTPError, URLError
 from parser import SearchParser, parse_dpage
 import os.path as osp
 from time import time, mktime, strptime, timezone
+from hashlib import md5
 
 
 def web_search(what):
@@ -30,7 +31,12 @@ def web_search(what):
     sp = SearchParser(o.read().decode())
     del o
     if sp.found:
-        return sp.found
+        found = sp.found
+        md5o = md5()
+        for i in found:
+            md5o.update(repr(found[i]).encode('utf8'))
+            i["hash"] = md5o.hexdigest()
+        return found
 
 
 def dp_get(index):
