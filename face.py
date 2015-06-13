@@ -95,7 +95,7 @@ class Face:
             if f is not None:
                 self.pages[i]["folder"] = f
                 tags += ("folder",)
-            self.tree.insert("", "end", l, text=t, tags=tags)
+            self.tree.insert("", "end", i, text=t, tags=tags)
 
     def add_control(self, frame):
         self.control = ttk.Frame(frame)
@@ -268,7 +268,8 @@ class Face:
         if not self.pages[iid]["entered"]:
             self.pages[iid]["entered"] = True
             try:
-                files, info = dp_get(iid)
+                files, info = dp_get(
+                    self.pages[iid]["site"], self.pages[iid]["page"])
             except:
                 self.sstatus("Error")
                 return

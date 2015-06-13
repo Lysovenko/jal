@@ -34,13 +34,16 @@ def web_search(what):
         found = sp.found
         md5o = md5()
         for i in found:
-            md5o.update(repr(found[i]).encode('utf8'))
+            md5o.update(repr(i).encode('utf8'))
             i["hash"] = md5o.hexdigest()
         return found
 
 
-def dp_get(index):
-    r = Request("http://www.ex.ua" + index)
+def dp_get(site, page):
+    if site == "ex-ua":
+        r = Request("http://www.ex.ua" + page)
+    else:
+        raise Exception("Wrong site")
     o = urlopen(r)
     return parse_dpage(o.read().decode())
 
