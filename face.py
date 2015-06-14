@@ -19,7 +19,8 @@ from tkinter import Tk, Menu, PhotoImage, ttk, Text, StringVar, messagebox
 from tkinter.filedialog import askdirectory
 from connect import web_search, dp_get, load_file
 from parser import InfoParser
-from os.path import expanduser, isdir, join, dirname
+from settings import Config
+from os.path import isdir, join, dirname
 from os import makedirs
 from threading import Thread, Lock
 
@@ -32,26 +33,6 @@ def autoscroll(sbar, first, last):
     else:
         sbar.grid()
     sbar.set(first, last)
-
-
-class Config(dict):
-    def __init__(self):
-        self.path = expanduser("~/.jml")
-        cfgl = []
-        try:
-            with open(self.path) as fp:
-                for line in iter(fp.readline, ""):
-                    if not line.isspace():
-                        nam, val = line.strip().split(": ", 1)
-                        cfgl.append((nam, eval(val)))
-        except:
-            pass
-        dict.__init__(self, cfgl)
-
-    def save(self):
-        with open(self.path, "w") as fp:
-            for n, v in self.items():
-                fp.write("%s: %s\n" % (n, repr(v)))
 
 
 class Face:
