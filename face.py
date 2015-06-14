@@ -310,8 +310,8 @@ class Face:
             odir = ddir
             if iid in self.remember:
                 rv = self.remember[iid]
-                if type(rv) == tuple:
-                    odir = rv[1]
+                if len(rv) == 4 and rv[3]:
+                    odir = rv[3]
             rb = -1
             ra = None
             while rb != ra and ra != 0:
