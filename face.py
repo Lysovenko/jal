@@ -196,10 +196,11 @@ class Face:
             return
         inidir = self.dirname.get()
         text = None
-        if self.text_curinfo in self.remember:
-            text = self.remember[self.text_curinfo]
+        curinfo = self.text_curinfo
+        if curinfo in self.remember:
+            text = self.remember[curinfo]
             if type(text) == tuple:
-                text, inidir = text
+                text, inidir = text[-2:]
         dname = askdirectory(initialdir=inidir, parent=self.root)
         if type(dname) == str and dname:
             if not isdir(dname):
@@ -210,7 +211,8 @@ class Face:
                     return
                 makedirs(dname)
             if text is not None:
-                self.remember[self.text_curinfo] = (text, dname)
+                cr = self.remember[curinfo]
+                self.remember[curinfo] = cr[:3] + (dname,)
             else:
                 self.dirname.set(dname)
 
