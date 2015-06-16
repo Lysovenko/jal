@@ -67,16 +67,13 @@ class Face:
                      PhotoImage(file=join(dirname(__file__), "favicon.gif")))
 
     def do_remember(self):
-        for i, t in self.remember.items():
+        for i, d in self.remember.items():
             self.pages[i] = {"entered": False}
             tags = ("page", "bmk")
-            s, p, t, f = t + (None,) * (4 - len(t))
-            self.pages[i]["site"] = s
-            self.pages[i]["page"] = p
-            if f is not None:
-                self.pages[i]["folder"] = f
+            self.pages[i].update(d)
+            if "folder" in d and d["folder"] is not None:
                 tags += ("folder",)
-            self.tree.insert("", "end", i, text=t, tags=tags)
+            self.tree.insert("", "end", i, text=d["title"], tags=tags)
 
     def add_control(self, frame):
         self.control = ttk.Frame(frame)
@@ -178,11 +175,12 @@ class Face:
         else:
             self.tree.item(iid, tags=("page", "bmk"))
             pg = self.pages[iid]
-            s = pg["site"]
-            p = pg["page"]
-            f = pg.get("folder")
-            t = self.tree.item(iid)["text"]
-            self.remember[iid] = (s, p, t, f)
+            remember = dict()
+            for name in ("site", "page", "folder"):
+                if name in pg:
+                    remember[name] = pg[name]
+            remember["title"] = self.tree.item(iid)["text"]
+            self.remember[iid] = remember
 
     def clear_list(self, evt=None):
         for i in self.pages:
@@ -198,9 +196,9 @@ class Face:
         text = None
         curinfo = self.text_curinfo
         if curinfo in self.remember:
-            text = self.remember[curinfo]
-            if type(text) == tuple:
-                text, inidir = text[-2:]
+            curem = self.remember[curinfo]
+            text = curem["title"]
+            inidir = curem.get("folder", inidir)
         dname = askdirectory(initialdir=inidir, parent=self.root)
         if type(dname) == str and dname:
             if not isdir(dname):
@@ -211,8 +209,7 @@ class Face:
                     return
                 makedirs(dname)
             if text is not None:
-                cr = self.remember[curinfo]
-                self.remember[curinfo] = cr[:3] + (dname,)
+                self.remember[curinfo]["folder"] = dname
             else:
                 self.dirname.set(dname)
 
@@ -309,9 +306,7 @@ class Face:
             iid = t[3]
             odir = ddir
             if iid in self.remember:
-                rv = self.remember[iid]
-                if len(rv) == 4 and rv[3]:
-                    odir = rv[3]
+                odir = self.remember[iid].get("folder", odir)
             rb = -1
             ra = None
             while rb != ra and ra != 0:
