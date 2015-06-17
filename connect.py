@@ -43,7 +43,7 @@ def dp_get(site, page):
     if site == "ex-ua":
         r = Request("http://www.ex.ua" + page)
     else:
-        raise Exception("Wrong site")
+        raise KeyError("Wrong site name")
     o = urlopen(r)
     return parse_dpage(o.read().decode())
 
@@ -86,21 +86,33 @@ def load_file(url, outfile, wwp):
             fo.write(d_bl)
             after = time()
             block_size = best_block_size(after-before, len(d_bl))
+            etime = calc_estimated_time(
+                after - before, len(d_bl), cont_len - written)
             if after - lwt >= 1:
-                wwp("%0.2f%%" % (written/cont_len*100,))
+                wwp("%0.2f%% %sETA" % (written/cont_len*100, etime))
                 lwt = after
     osp.os.utime(outfile, (time(), m_time))
     return cont_len - written
 
 
-def best_block_size(elapsed_time, bytes):
-    new_min = max(bytes / 2.0, 1.0)
-    new_max = min(max(bytes * 2.0, 1.0), 4194304)
+def best_block_size(elapsed_time, nbytes):
+    new_min = max(nbytes / 2.0, 1.0)
+    new_max = min(max(nbytes * 2.0, 1.0), 4194304)
     if elapsed_time < 0.001:
         return int(new_max)
-    rate = bytes / elapsed_time
+    rate = nbytes / elapsed_time
     if rate > new_max:
         return int(new_max)
     if rate < new_min:
         return int(new_min)
     return int(rate)
+
+
+def calc_estimated_time(elapsed, nbytes, ebytes):
+    seconds = int(elapsed / nbytes * ebytes)
+    minutes, seconds = divmod(seconds, 60)
+    hours, minutes = divmod(minutes, 60)
+    tparts = [hours, minutes, seconds]
+    while tparts[0] == 0 and len(tparts) > 1:
+        tparts.pop(0)
+    return ':'.join({'%02d' % i for i in tparts})
