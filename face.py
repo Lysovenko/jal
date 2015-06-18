@@ -15,7 +15,8 @@
 Making a face of the application
 """
 
-from tkinter import Tk, Menu, PhotoImage, ttk, Text, StringVar, messagebox
+from tkinter import Tk, Menu, PhotoImage, ttk, Text, StringVar, messagebox, \
+    BooleanVar
 from tkinter.filedialog import askdirectory
 from connect import web_search, dp_get, load_file
 from parser import InfoParser
@@ -37,7 +38,7 @@ def autoscroll(sbar, first, last):
 
 class Face:
     def __init__(self, root):
-        root.title("JML media loader")
+        root.title(_("JML media loader"))
         root.protocol("WM_DELETE_WINDOW", self.on_delete)
         self.root = root
         root.grid_columnconfigure(0, weight=1)
@@ -80,7 +81,7 @@ class Face:
         self.control.grid_columnconfigure(1, weight=1)
         self.control.grid(column=0, row=0, columnspan=2, sticky="ew")
         self.btn = ttk.Button(self.control, command=self.get_url,
-                              text="Search", width=8)
+                              text=_("Search"), width=8)
         self.btn.grid(column=0, row=0, sticky="w")
         self.entry = ttk.Entry(self.control, width=60)
         self.entry.grid(column=1, row=0, sticky="ew", padx=3)
@@ -88,7 +89,7 @@ class Face:
         self.dirname = StringVar()
         self.dirname.set(self.cfg.get("last-dir", ""))
         self.dirbut = ttk.Button(self.control, command=self.ask_dir,
-                                 text="Browse...")
+                                 text=_("Browse..."))
         self.dirbut.grid(column=0, row=1, sticky="ew")
         self.dirlab = ttk.Label(self.control, textvariable=self.dirname)
         self.dirlab.grid(row=1, column=1, sticky="ew")
@@ -139,19 +140,23 @@ class Face:
         top["menu"] = self.menubar = Menu(top)
         self.mfile = Menu(self.menubar)
         self.medit = Menu(self.menubar)
-        self.menubar.add_cascade(menu=self.mfile, label="File")
-        self.menubar.add_cascade(menu=self.medit, label="Edit")
-        self.mfile.add_command(label="Get URL", command=self.get_url)
-        self.mfile.add_command(label="Select dir...", command=self.ask_dir)
-        self.mfile.add_command(label="Select default folder...",
+        self.menubar.add_cascade(menu=self.mfile, label=_("File"))
+        self.menubar.add_cascade(menu=self.medit, label=_("Edit"))
+        self.mfile.add_command(label=_("Get URL"), command=self.get_url)
+        self.mfile.add_command(label=_("Select dir..."), command=self.ask_dir)
+        self.mfile.add_command(label=_("Select default folder..."),
                                command=self.ask_dir)
-        self.mfile.add_command(label="Quit", command=self.on_delete,
+        self.mfile.add_command(label=_("Quit"), command=self.on_delete,
                                accelerator="Ctrl+Q", underline=1)
         self.root.bind_all("<Control-q>", lambda x: self.on_delete())
-        self.medit.add_command(label="Clear", command=self.clear_list)
+        self.medit.add_command(label=_("Clear"), command=self.clear_list)
+        # 3 lines below is for future upgrade reminding
+        eua = BooleanVar()
+        self.medit.add_checkbutton(label="ex-ua", onvalue=True, offvalue=False,
+                                   variable=eua)
 
     def get_url(self, evt=None):
-        self.sstatus("Wait...")
+        self.sstatus(_("Wait..."))
         pages = self.pages
         sr = web_search(self.entry.get())
         if sr is None:
@@ -164,7 +169,7 @@ class Face:
                 pages[h] = {"entered": False}
                 pages[h]["site"] = i["site"]
                 pages[h]["page"] = i["page"]
-        self.sstatus("OK")
+        self.sstatus(_("OK"))
 
     def remember_pg(self, evt=None):
         """Switch page remember"""
@@ -331,6 +336,16 @@ class Face:
 
 
 def start_face():
+    try:
+        import gettext
+    except ImportError:
+        __builtins__.__dict__["_"] = str
+    else:
+        localedir = join(dirname(__file__), "i18n", "locale")
+        if isdir(localedir):
+            gettext.install("jml", localedir=localedir)
+        else:
+            gettext.install("jml")
     root = Tk()
     f = Face(root)
     root.mainloop()
