@@ -142,7 +142,7 @@ class Face:
         self.medit = Menu(self.menubar)
         self.menubar.add_cascade(menu=self.mfile, label=_("File"))
         self.menubar.add_cascade(menu=self.medit, label=_("Edit"))
-        self.mfile.add_command(label=_("Get URL"), command=self.get_url)
+        self.mfile.add_command(label=_("Search"), command=self.get_url)
         self.mfile.add_command(label=_("Select dir..."), command=self.ask_dir)
         self.mfile.add_command(label=_("Select default folder..."),
                                command=self.ask_dir)

@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.0.3 \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-18 23:11+0300\n"
-"PO-Revision-Date: 2015-06-18 23:12+0300\n"
+"POT-Creation-Date: 2015-06-19 22:20+0300\n"
+"PO-Revision-Date: 2015-06-19 22:26+0300\n"
 "Last-Translator: Serhiy Lysovenko <EMAIL@ADDRESS>\n"
 "Language-Team: UKRAINIAN <nospam@gmail.com>\n"
 "Language: Ukrainian\n"
@@ -17,7 +17,7 @@ msgstr ""
 msgid "JML media loader"
 msgstr "JML медійний завантажувач"
 
-#: ../../face.py:84
+#: ../../face.py:84 ../../face.py:145
 msgid "Search"
 msgstr "Шукати"
 
@@ -32,10 +32,6 @@ msgstr "Файл"
 #: ../../face.py:144
 msgid "Edit"
 msgstr "Редагування"
-
-#: ../../face.py:145
-msgid "Get URL"
-msgstr "Отримати URL"
 
 #: ../../face.py:146
 msgid "Select dir..."
