@@ -210,9 +210,9 @@ class Face:
         if type(dname) == str and dname:
             if not isdir(dname):
                 if messagebox.askyesno(
-                        message="Are you sure you want to create "
-                        "a new directory?",
-                        icon="question", title="New directory") is False:
+                        message=_("Are you sure you want to create "
+                                  "a new directory?"),
+                        icon="question", title=_("New directory")) is False:
                     return
                 makedirs(dname)
             if text is not None:
@@ -227,9 +227,9 @@ class Face:
             iid = self.tree.focus()
             if iid in self.remember:
                 if messagebox.askyesno(
-                        message="Are you sure you want to "
-                        "delete preserved page?",
-                        icon="question", title="Install") is False:
+                        message=_("Are you sure you want to "
+                                  "delete preserved page?"),
+                        icon="question", title=_("Deletion")) is False:
                     return
         next_focus = self.tree.next(iid)
         if not next_focus:
@@ -250,7 +250,7 @@ class Face:
                     i += 1
 
     def enter_page(self, evt=None):
-        self.sstatus("Wait...")
+        self.sstatus(_("Wait..."))
         iid = self.tree.focus()
         if not self.pages[iid]["entered"]:
             self.pages[iid]["entered"] = True
@@ -258,7 +258,7 @@ class Face:
                 files, info = dp_get(
                     self.pages[iid]["site"], self.pages[iid]["page"])
             except:
-                self.sstatus("Error")
+                self.sstatus(_("Error"))
                 return
             if files:
                 if info:
@@ -270,10 +270,10 @@ class Face:
                     self.ufid.append((u, f, tid, iid))
                     tids.append(tid)
                 self.pages[iid]["contains"] = tids
-                self.sstatus("OK")
+                self.sstatus(_("OK"))
             else:
                 self.del_page(iid)
-                self.sstatus("Bad item detected and destroyed.")
+                self.sstatus(_("Bad item detected and destroyed"))
         else:
             self.text_info(iid)
 
