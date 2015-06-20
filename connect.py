@@ -31,12 +31,10 @@ def web_search(what):
     sp = SearchParser(o.read().decode())
     del o
     if sp.found:
-        found = sp.found
-        md5o = md5()
-        for i in found:
-            md5o.update(repr(i).encode('utf8'))
+        for i in sp.found:
+            md5o = md5("/".join((i["site"], i["page"])).encode("utf8"))
             i["hash"] = md5o.hexdigest()
-        return found
+        return sp.found
 
 
 def dp_get(site, page):
