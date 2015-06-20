@@ -18,12 +18,13 @@ Making a face of the application
 from tkinter import Tk, Menu, PhotoImage, ttk, Text, StringVar, messagebox, \
     BooleanVar
 from tkinter.filedialog import askdirectory
-from connect import web_search, dp_get, load_file
+from connect import web_search, dp_get
+from load import Loader
 from parser import InfoParser
 from settings import Config
 from os.path import isdir, join, dirname
 from os import makedirs
-from threading import Thread, Lock
+from threading import Lock
 
 
 def autoscroll(sbar, first, last):
@@ -60,6 +61,7 @@ class Face:
         st_lab.grid(column=0, row=2, sticky="we")
         self.add_menu()
         self.locked = False
+        self.loader = Loader(self.sstatus)
         self.slock = Lock()
         self.pages = {}
         self.remember = self.cfg.get("remembered", {})
@@ -289,15 +291,7 @@ class Face:
             text["state"] = "disabled"
 
     def enter_file(self, evt=None):
-        if self.locked:
-            return
-        self.locked = True
         sel = self.tree.selection()
-        t = Thread(target=self.t_enter_file, args=(sel,))
-        t.daemon = True
-        t.start()
-
-    def t_enter_file(self, sel):
         ufids = []
         for i in self.ufid:
             if i[2] in sel:
@@ -305,20 +299,12 @@ class Face:
         nfiles = len(ufids)
         sis = self.sstatus
         ddir = self.dirname.get()
-        for i, t in enumerate(ufids):
-            sst = "%d of %d (%%s) %s" % (i + 1, nfiles, t[1])
-            wwp = lambda x: sis(sst % x)
+        for t in ufids:
             iid = t[3]
             odir = ddir
             if iid in self.remember:
                 odir = self.remember[iid].get("folder", odir)
-            rb = -1
-            ra = None
-            while rb != ra and ra != 0:
-                rb = ra
-                ra = load_file(t[0], join(odir, t[1]), wwp)
-        self.locked = False
-        sis("Done")
+            self.loader.add_file(t[0], join(odir, t[1]))
 
     def on_delete(self):
         cfg = self.cfg
