@@ -56,7 +56,7 @@ def load_file(url, outfile, wwp):
     if res_len > 0:
         req.add_header("Range", "bytes=%d-" % res_len)
         open_mode = "ab"
-    wwp("Connecting...")
+    wwp(_("Connecting..."))
     lwt = time()
     try:
         hdata = urlopen(req)
@@ -65,7 +65,7 @@ def load_file(url, outfile, wwp):
                                  "%a, %d %b %Y %H:%M:%S %Z")) - timezone
     except (HTTPError,) as err:
         if err.code == 416:
-            wwp("Nothing to do")
+            wwp(_("Nothing to do"))
             return
         if err.code < 500 or err.code >= 600:
             raise

@@ -19,6 +19,7 @@ from os.path import basename
 from threading import Thread, Lock
 from connect import load_file
 
+
 class Loader:
     def __init__(self, sstatus):
         self.sstatus = sstatus
@@ -44,18 +45,17 @@ class Loader:
             self.qlock.acquire()
             if self.queue:
                 uft = self.queue.pop(0)
-                leave = len(self.queue)
             else:
                 self.running = False
                 self.qlock.release()
                 break
             self.qlock.release()
-            sst = "%%s\t%s (%d leaves)" % (basename(uft[1]), leave)
-            wwp = lambda x: sis(sst % x)
+            sst = _("%%s\t%s (%%d remains)") % \
+                basename(uft[1]).replace("%", "%%")
+            wwp = lambda x, y=self.queue: sis(sst % (x, len(y)))
             rb = -1
             ra = None
             while rb != ra and ra != 0:
                 rb = ra
                 ra = load_file(uft[0], uft[1], wwp)
         sis(_("Done"))
-
