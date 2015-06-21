@@ -67,7 +67,7 @@ class Face:
         self.remember = self.cfg.get("remembered", {})
         self.do_remember()
         root.tk.call("wm", "iconphoto", root._w,
-                     PhotoImage(file=join(dirname(__file__), "favicon.gif")))
+                     PhotoImage(file=join(dirname(__file__), "icon.gif")))
 
     def do_remember(self):
         for i, d in self.remember.items():
@@ -82,12 +82,12 @@ class Face:
         self.control = ttk.Frame(frame)
         self.control.grid_columnconfigure(1, weight=1)
         self.control.grid(column=0, row=0, columnspan=2, sticky="ew")
-        self.btn = ttk.Button(self.control, command=self.get_url,
+        self.btn = ttk.Button(self.control, command=self.search,
                               text=_("Search"), width=8)
         self.btn.grid(column=0, row=0, sticky="w")
         self.entry = ttk.Entry(self.control, width=60)
         self.entry.grid(column=1, row=0, sticky="ew", padx=3)
-        self.entry.bind("<KeyPress-Return>", self.get_url)
+        self.entry.bind("<KeyPress-Return>", self.search)
         self.dirname = StringVar()
         self.dirname.set(self.cfg.get("last-dir", ""))
         self.dirbut = ttk.Button(self.control, command=self.ask_dir,
@@ -144,7 +144,7 @@ class Face:
         self.medit = Menu(self.menubar)
         self.menubar.add_cascade(menu=self.mfile, label=_("File"))
         self.menubar.add_cascade(menu=self.medit, label=_("Edit"))
-        self.mfile.add_command(label=_("Search"), command=self.get_url)
+        self.mfile.add_command(label=_("Search"), command=self.search)
         self.mfile.add_command(label=_("Select dir..."), command=self.ask_dir)
         self.mfile.add_command(label=_("Select default folder..."),
                                command=self.ask_dir)
@@ -157,7 +157,7 @@ class Face:
         self.medit.add_checkbutton(label="ex-ua", onvalue=True, offvalue=False,
                                    variable=eua)
 
-    def get_url(self, evt=None):
+    def search(self, evt=None):
         self.sstatus(_("Wait..."))
         pages = self.pages
         sr = web_search(self.entry.get())
