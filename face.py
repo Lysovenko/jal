@@ -18,7 +18,7 @@ Making a face of the application
 from tkinter import Tk, Menu, PhotoImage, ttk, Text, StringVar, messagebox, \
     BooleanVar
 from tkinter.filedialog import askdirectory
-from connect import web_search, dp_get
+from sithub import get_sites, web_search, get_datapage
 from load import Loader
 from parser import InfoParser
 from settings import Config
@@ -64,12 +64,12 @@ class Face:
         self.loader = Loader(self.sstatus)
         self.slock = Lock()
         self.pages = {}
-        self.remember = self.cfg.get("remembered", {})
         self.do_remember()
         root.tk.call("wm", "iconphoto", root._w,
                      PhotoImage(file=join(dirname(__file__), "icon.gif")))
 
     def do_remember(self):
+        self.remember = self.cfg.get("remembered", {})
         for i, d in self.remember.items():
             self.pages[i] = {"entered": False}
             tags = ("page", "bmk")
@@ -152,15 +152,18 @@ class Face:
                                accelerator="Ctrl+Q", underline=1)
         self.root.bind_all("<Control-q>", lambda x: self.on_delete())
         self.medit.add_command(label=_("Clear"), command=self.clear_list)
-        # 3 lines below is for future upgrade reminding
-        eua = BooleanVar()
-        self.medit.add_checkbutton(label="ex-ua", onvalue=True, offvalue=False,
-                                   variable=eua)
+        sel_sites = self.cfg.get("sites", set())
+        self.sites = [i + (BooleanVar(),) for i in get_sites()]
+        for site, name, bvar in self.sites:
+            bvar.set(site in sel_sites)
+            self.medit.add_checkbutton(
+                label=name, onvalue=True, offvalue=False, variable=bvar)
 
     def search(self, evt=None):
         self.sstatus(_("Wait..."))
         pages = self.pages
-        sr = web_search(self.entry.get())
+        sr = web_search(
+            self.entry.get(), {i[0] for i in self.sites if i[2].get()})
         if sr is None:
             return
         for i in sr:
@@ -255,7 +258,7 @@ class Face:
         if not self.pages[iid]["entered"]:
             self.pages[iid]["entered"] = True
             try:
-                files, info = dp_get(
+                files, info = get_datapage(
                     self.pages[iid]["site"], self.pages[iid]["page"])
             except:
                 self.sstatus(_("Error"))
@@ -312,6 +315,7 @@ class Face:
         cfg["last-dir"] = self.dirname.get()
         cfg["geometry"] = self.root.geometry()
         cfg["sashpos"] = self.pw.sashpos(0)
+        cfg["sites"] = set({i[0] for i in self.sites if i[2].get()})
         cfg.save()
         self.root.destroy()
 

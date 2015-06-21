@@ -87,7 +87,8 @@ def load_file(url, outfile, wwp):
             etime = calc_estimated_time(
                 after - before, len(d_bl), cont_len - written)
             if after - lwt >= 1:
-                wwp("%0.2f%% %sETA" % (written/cont_len*100, etime))
+                wwp("%05.2f%% %sETA" %
+                    ((written + res_len) / (cont_len + res_len) * 100, etime))
                 lwt = after
     osp.os.utime(outfile, (time(), m_time))
     return cont_len - written
@@ -107,10 +108,11 @@ def best_block_size(elapsed_time, nbytes):
 
 
 def calc_estimated_time(elapsed, nbytes, ebytes):
+    if nbytes == 0:
+        return "--:--:--"
     seconds = int(elapsed / nbytes * ebytes)
     minutes, seconds = divmod(seconds, 60)
     hours, minutes = divmod(minutes, 60)
-    tparts = [hours, minutes, seconds]
-    while tparts[0] == 0 and len(tparts) > 1:
-        tparts.pop(0)
-    return ':'.join({'%02d' % i for i in tparts})
+    if hours > 99:
+        return "--:--:--"
+    return "%02d:%02d:%02d" % (hours, minutes, seconds)
