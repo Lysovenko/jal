@@ -16,6 +16,7 @@ Sites hub
 """
 
 import connect as con
+from parser import InfoParser
 
 
 def get_sites():
@@ -27,4 +28,7 @@ def web_search(what, where):
 
 
 def get_datapage(site, page):
-    return con.dp_get(site, page)
+    files, info = con.dp_get(site, page)
+    if info:
+        info = InfoParser(info).text
+    return files, info

@@ -18,13 +18,12 @@ Making a face of the application
 from tkinter import Tk, Menu, PhotoImage, ttk, Text, StringVar, messagebox, \
     BooleanVar
 from tkinter.filedialog import askdirectory
-from sithub import get_sites, web_search, get_datapage
-from load import Loader
-from parser import InfoParser
-from settings import Config
 from os.path import isdir, join, dirname
 from os import makedirs
 from threading import Lock
+from sithub import get_sites, web_search, get_datapage
+from load import Loader
+from settings import Config
 
 
 def autoscroll(sbar, first, last):
@@ -265,7 +264,7 @@ class Face:
                 return
             if files:
                 if info:
-                    self.pages[iid]["info"] = InfoParser(info).text
+                    self.pages[iid]["info"] = info
                     self.text_info(iid)
                 tids = []
                 for u, f in files:
