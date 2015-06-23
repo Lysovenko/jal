@@ -259,8 +259,8 @@ class Face:
             try:
                 files, info = get_datapage(
                     self.pages[iid]["site"], self.pages[iid]["page"])
-            except:
-                self.sstatus(_("Error"))
+            except Exception as err:
+                self.sstatus(_("Error: {0}").format(err))
                 return
             if files:
                 if info:

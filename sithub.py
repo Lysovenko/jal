@@ -16,7 +16,6 @@ Sites hub
 """
 
 import connect as con
-from parser import InfoParser
 
 
 def get_sites():
@@ -27,8 +26,11 @@ def web_search(what, where):
     return con.web_search(what)
 
 
+_GET_DATAPAGES = {"ex-ua": con.dp_get_ex_ua}
+
+
 def get_datapage(site, page):
-    files, info = con.dp_get(site, page)
-    if info:
-        info = InfoParser(info).text
-    return files, info
+    if site in _GET_DATAPAGES:
+        return _GET_DATAPAGES[site](page)
+    else:
+        raise KeyError("Wrong site name")

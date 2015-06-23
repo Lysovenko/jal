@@ -18,7 +18,7 @@ Internet connections
 from urllib.request import urlopen, Request
 from urllib.parse import urlencode
 from urllib.error import HTTPError, URLError
-from parser import SearchParser, parse_dpage
+from parser import SearchParser, parse_dpage, InfoParser
 import os.path as osp
 from time import time, mktime, strptime, timezone
 from hashlib import md5
@@ -37,13 +37,13 @@ def web_search(what):
         return sp.found
 
 
-def dp_get(site, page):
-    if site == "ex-ua":
-        r = Request("http://www.ex.ua" + page)
-    else:
-        raise KeyError("Wrong site name")
+def dp_get_ex_ua(page):
+    r = Request("http://www.ex.ua" + page)
     o = urlopen(r)
-    return parse_dpage(o.read().decode())
+    files, info = parse_dpage(o.read().decode())
+    if info:
+        info = InfoParser(info).text
+    return files, info
 
 
 def load_file(url, outfile, wwp):
