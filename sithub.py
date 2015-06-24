@@ -15,7 +15,10 @@
 Sites hub
 """
 
-import connect as con
+import ex_ua
+
+
+_SIT_MDLS = {"ex-ua": ex_ua}
 
 
 def get_sites():
@@ -23,14 +26,15 @@ def get_sites():
 
 
 def web_search(what, where):
-    return con.web_search(what)
-
-
-_GET_DATAPAGES = {"ex-ua": con.dp_get_ex_ua}
+    result = []
+    for i in where:
+        if i in _SIT_MDLS:
+            result += _SIT_MDLS[i].web_search(what)
+    return result
 
 
 def get_datapage(site, page):
-    if site in _GET_DATAPAGES:
-        return _GET_DATAPAGES[site](page)
+    if site in _SIT_MDLS:
+        return _SIT_MDLS[site].get_datapage(page)
     else:
         raise KeyError("Wrong site name")
