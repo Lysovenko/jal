@@ -22,7 +22,7 @@ _SIT_MDLS = {"ex-ua": ex_ua}
 
 
 def get_sites():
-    return [("ex-ua", _("ex-ua")), ("kinogo", _("KinoGo"))]
+    return [("ex-ua", "EX-UA"), ("youtube", "YouTube")]
 
 
 def web_search(what, where):

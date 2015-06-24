@@ -141,8 +141,10 @@ class Face:
         top["menu"] = self.menubar = Menu(top)
         self.mfile = Menu(self.menubar)
         self.medit = Menu(self.menubar)
+        self.msites = Menu(self.menubar)
         self.menubar.add_cascade(menu=self.mfile, label=_("File"))
         self.menubar.add_cascade(menu=self.medit, label=_("Edit"))
+        self.menubar.add_cascade(menu=self.msites, label=_("Sites"))
         self.mfile.add_command(label=_("Search"), command=self.search)
         self.mfile.add_command(label=_("Select dir..."), command=self.ask_dir)
         self.mfile.add_command(label=_("Select default folder..."),
@@ -155,7 +157,7 @@ class Face:
         self.sites = [i + (BooleanVar(),) for i in get_sites()]
         for site, name, bvar in self.sites:
             bvar.set(site in sel_sites)
-            self.medit.add_checkbutton(
+            self.msites.add_checkbutton(
                 label=name, onvalue=True, offvalue=False, variable=bvar)
 
     def search(self, evt=None):

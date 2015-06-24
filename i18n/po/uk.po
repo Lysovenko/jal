@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.0.3 \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-23 21:37+0300\n"
-"PO-Revision-Date: 2015-06-23 21:40+0300\n"
+"POT-Creation-Date: 2015-06-24 23:54+0300\n"
+"PO-Revision-Date: 2015-06-24 23:54+0300\n"
 "Last-Translator: Serhiy Lysovenko <EMAIL@ADDRESS>\n"
 "Language-Team: UKRAINIAN <nospam@gmail.com>\n"
 "Language: Ukrainian\n"
@@ -13,19 +13,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: utf-8\n"
 
-#: ../../connect.py:59
-msgid "Connecting..."
-msgstr "З'єднання..."
-
-#: ../../connect.py:68
-msgid "Nothing to do"
-msgstr "Нічого робити"
-
 #: ../../face.py:41
 msgid "JML media loader"
 msgstr "JML медійний завантажувач"
 
-#: ../../face.py:85 ../../face.py:146
+#: ../../face.py:85 ../../face.py:148
 msgid "Search"
 msgstr "Шукати"
 
@@ -33,76 +25,80 @@ msgstr "Шукати"
 msgid "Browse..."
 msgstr "Вибрати..."
 
-#: ../../face.py:144
+#: ../../face.py:145
 msgid "File"
 msgstr "Файл"
 
-#: ../../face.py:145
+#: ../../face.py:146
 msgid "Edit"
 msgstr "Редагування"
 
 #: ../../face.py:147
+msgid "Sites"
+msgstr "Місця"
+
+#: ../../face.py:149
 msgid "Select dir..."
 msgstr "Вибрати директорію..."
 
-#: ../../face.py:148
+#: ../../face.py:150
 msgid "Select default folder..."
 msgstr "Обрати типову дтректорію..."
 
-#: ../../face.py:150
+#: ../../face.py:152
 msgid "Quit"
 msgstr "Вийти"
 
-#: ../../face.py:153
+#: ../../face.py:155
 msgid "Clear"
 msgstr "Очистити"
 
-#: ../../face.py:162 ../../face.py:255
+#: ../../face.py:164 ../../face.py:257
 msgid "Wait..."
 msgstr "Зачекайте..."
 
-#: ../../face.py:176 ../../face.py:275
+#: ../../face.py:178 ../../face.py:277
 msgid "OK"
 msgstr "Гаразд"
 
-#: ../../face.py:215
+#: ../../face.py:217
 msgid "Are you sure you want to create a new directory?"
 msgstr "Ви впевнені, що хочете створити новий каталог?"
 
-#: ../../face.py:217
+#: ../../face.py:219
 msgid "New directory"
 msgstr "Новий каталог"
 
-#: ../../face.py:232
+#: ../../face.py:234
 msgid "Are you sure you want to delete preserved page?"
 msgstr "Ви впевнені, що хочете видалии зарезервовану сторінку?"
 
-#: ../../face.py:234
+#: ../../face.py:236
 msgid "Deletion"
 msgstr "Видалення"
 
-#: ../../face.py:263
+#: ../../face.py:265
 #, python-brace-format
 msgid "Error: {0}"
 msgstr "Помилка: {0}"
 
-#: ../../face.py:278
+#: ../../face.py:280
 msgid "Bad item detected and destroyed"
 msgstr "Хибний пункт виявлено і знищено"
 
-#: ../../load.py:53
+#: ../../load.py:56
 #, python-format
 msgid "%%s\t%s (%%d remains)"
 msgstr "%%s\t%s (%%d залишилось)"
 
-#: ../../load.py:61
+#: ../../load.py:64
 msgid "Done"
 msgstr "Виконано"
 
-#: ../../sithub.py:22
-msgid "ex-ua"
-msgstr "EX-UA"
+#: ../../load.py:77
+msgid "Connecting..."
+msgstr "З'єднання..."
 
-#: ../../sithub.py:22
-msgid "KinoGo"
-msgstr "КіноГо"
+#: ../../load.py:86
+msgid "Nothing to do"
+msgstr "Нічого робити"
