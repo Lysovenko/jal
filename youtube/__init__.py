@@ -12,30 +12,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """
-Sites hub
+YouTube data treatment
 """
 
-import ex_ua
-import youtube
+from urllib.request import urlopen, Request
+from urllib.parse import urlencode
+from .parser import SearchParser
+from hashlib import md5
 
 
-_SIT_MDLS = {"ex-ua": ex_ua, "youtube": youtube}
-
-
-def get_sites():
-    return [("ex-ua", "EX-UA"), ("youtube", "YouTube")]
-
-
-def web_search(what, where):
-    result = []
-    for i in where:
-        if i in _SIT_MDLS:
-            result += _SIT_MDLS[i].web_search(what)
-    return result
-
-
-def get_datapage(site, page):
-    if site in _SIT_MDLS:
-        return _SIT_MDLS[site].get_datapage(page)
-    else:
-        raise KeyError("Wrong site name")
+def web_search(what):
+    o = urlopen("https://youtube.com/results?%s" %
+                urlencode([("search_query", what)]))
+    sp = SearchParser(o.read().decode())
+    del o
+    if sp.found:
+        for i in sp.found:
+            md5o = md5("/".join((i["site"], i["page"])).encode("utf8"))
+            i["hash"] = md5o.hexdigest()
+        return sp.found
+    return []
