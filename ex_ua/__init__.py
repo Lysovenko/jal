@@ -31,6 +31,7 @@ def web_search(what):
             md5o = md5("/".join((i["site"], i["page"])).encode("utf8"))
             i["hash"] = md5o.hexdigest()
         return sp.found
+    return []
 
 
 def get_datapage(page):

@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from html.parser import HTMLParser
-from html import escape
 from sys import hexversion
 
 
@@ -42,7 +41,6 @@ class SearchParser(HTMLParser):
                     self.curdata["page"] = href
                     self.curdata["site"] = "ex-ua"
                     self.is_aopen = True
-        pass
 
     def handle_endtag(self, tag):
         if tag == "table":
@@ -60,7 +58,6 @@ class SearchParser(HTMLParser):
                 self.curdata["title"] += data
             except KeyError:
                 self.curdata["title"] = data
-        pass
 
 
 _MEDIA_TYPES = {"video": "flv", "audio": "mp3"}

@@ -15,7 +15,6 @@
 YouTube data parser
 """
 from html.parser import HTMLParser
-from html import escape
 from sys import hexversion
 
 
