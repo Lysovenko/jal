@@ -17,7 +17,7 @@ YouTube data treatment
 
 from urllib.request import urlopen, Request
 from urllib.parse import urlencode
-from .parser import SearchParser
+from .parser import SearchParser, parse_dpage
 from hashlib import md5
 
 
@@ -32,3 +32,10 @@ def web_search(what):
             i["hash"] = md5o.hexdigest()
         return sp.found
     return []
+
+
+def get_datapage(page):
+    r = Request("https://youtube.com" + page)
+    o = urlopen(r)
+    files, info = parse_dpage("https://youtube.com" + page)
+    return files, info

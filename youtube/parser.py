@@ -16,6 +16,7 @@ YouTube data parser
 """
 from html.parser import HTMLParser
 from sys import hexversion
+from os import popen
 
 
 class SearchParser(HTMLParser):
@@ -40,3 +41,12 @@ class SearchParser(HTMLParser):
             curdata["page"] = dattrs["href"]
             curdata["site"] = "youtube"
             self.found.append(curdata)
+
+
+def parse_dpage(url):
+    furl = popen("youtube-dl -gf5 '%s'" % url, "r").read()
+    title = popen("youtube-dl --get-title '%s'" % url, "r").read()
+    fname = title.translate({34: 95, 47: 95}).strip() + '.flv'
+    res = [(furl, fname)]
+    info = [(popen("youtube-dl --get-description '%s'" % url, "r").read(), ())]
+    return res, info
