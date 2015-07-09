@@ -33,13 +33,14 @@ class Loader:
     def add_file(self, url, fname):
         self.qlock.acquire()
         self.queue.append((url, fname))
-        if not self.running and self.queue:
+        if (not self.running) and self.queue:
             t = Thread(target=self.t_load)
             t.daemon = True
             t.start()
         self.qlock.release()
 
     def t_load(self):
+        "loader thread"
         sis = self.sstatus
         self.qlock.acquire()
         self.running = True
