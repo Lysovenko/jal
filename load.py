@@ -33,7 +33,7 @@ class Loader:
     def add_file(self, url, fname):
         self.qlock.acquire()
         self.queue.append((url, fname))
-        if (not self.running) and self.queue:
+        if not self.running:
             t = Thread(target=self.t_load)
             t.daemon = True
             t.start()
@@ -59,7 +59,7 @@ class Loader:
             wwp = lambda x, y=self.queue: sis(sst % (x, len(y)))
             rb = -1
             ra = None
-            while rb != ra and ra != 0:
+            while rb != ra:
                 rb = ra
                 ra = load_file(uft[0], uft[1], wwp)
         sis(_("Done"))
