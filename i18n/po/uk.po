@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.0.3 \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-24 23:54+0300\n"
-"PO-Revision-Date: 2015-06-24 23:54+0300\n"
+"POT-Creation-Date: 2015-08-05 17:40+0300\n"
+"PO-Revision-Date: 2015-08-05 17:41+0300\n"
 "Last-Translator: Serhiy Lysovenko <EMAIL@ADDRESS>\n"
 "Language-Team: UKRAINIAN <nospam@gmail.com>\n"
 "Language: Ukrainian\n"
@@ -86,19 +86,19 @@ msgstr "Помилка: {0}"
 msgid "Bad item detected and destroyed"
 msgstr "Хибний пункт виявлено і знищено"
 
-#: ../../load.py:56
+#: ../../load.py:57
 #, python-format
-msgid "%%s\t%s (%%d remains)"
-msgstr "%%s\t%s (%%d залишилось)"
+msgid "%%s\t%s (%%d in queue)"
+msgstr "%%s\t%s (%%d в черзі)"
 
-#: ../../load.py:64
+#: ../../load.py:65
 msgid "Done"
 msgstr "Виконано"
 
-#: ../../load.py:77
+#: ../../load.py:78
 msgid "Connecting..."
 msgstr "З'єднання..."
 
-#: ../../load.py:86
+#: ../../load.py:87
 msgid "Nothing to do"
 msgstr "Нічого робити"

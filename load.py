@@ -54,7 +54,7 @@ class Loader:
                 self.qlock.release()
                 break
             self.qlock.release()
-            sst = _("%%s\t%s (%%d remains)") % \
+            sst = _("%%s\t%s (%%d in queue)") % \
                 basename(uft[1]).replace("%", "%%")
             wwp = lambda x, y=self.queue: sis(sst % (x, len(y)))
             rb = -1
@@ -96,7 +96,10 @@ def load_file(url, outfile, wwp):
     with open(outfile, open_mode) as fo:
         while written < cont_len:
             before = time()
-            d_bl = hdata.read(block_size)
+            try:
+                d_bl = hdata.read(block_size)
+            except Exception:
+                break
             written += len(d_bl)
             if len(d_bl) == 0:
                 break
