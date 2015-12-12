@@ -47,6 +47,7 @@ class SearchParser(HTMLParser):
             self.is_topen = False
         if tag == "td":
             if self.curdata:
+                self.curdata["title"] = self.curdata.get("title", "No title")
                 self.found.append(self.curdata)
                 self.curdata = {}
         if tag == "a":
