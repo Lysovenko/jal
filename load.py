@@ -17,7 +17,7 @@ Loader
 
 from os.path import basename
 from threading import Thread, Lock
-from time import time, mktime, strptime, timezone
+from time import time, mktime, strptime, timezone, sleep
 import os.path as osp
 from urllib.error import HTTPError, URLError
 from urllib.request import urlopen, Request
@@ -29,6 +29,7 @@ class Loader:
         self.qlock = Lock()
         self.running = False
         self.queue = []
+        self.__delay = None
 
     def add_file(self, url, fname):
         self.qlock.acquire()
@@ -38,6 +39,15 @@ class Loader:
             t.daemon = True
             t.start()
         self.qlock.release()
+
+    def set_delay(self, delay):
+        try:
+            res = float(delay)
+        except ValueError:
+            res = None
+        if isinstance(res, float) and (res < 0. or res > 5):
+            res = None
+        self.__delay = res
 
     def t_load(self):
         "loader thread"
@@ -65,7 +75,7 @@ class Loader:
         sis(_("Done"))
 
 
-def load_file(url, outfile, wwp):
+def load_file(url, outfile, wwp, delay=None):
     req = Request(url)
     if osp.isfile(outfile):
         res_len = osp.getsize(outfile)
@@ -95,6 +105,8 @@ def load_file(url, outfile, wwp):
     block_size = min(1024, cont_len)
     with open(outfile, open_mode) as fo:
         while written < cont_len:
+            if delay:
+                sleep(delay)
             before = time()
             try:
                 d_bl = hdata.read(block_size)

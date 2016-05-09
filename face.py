@@ -24,6 +24,7 @@ from threading import Lock
 from sithub import get_sites, web_search, get_datapage
 from load import Loader
 from settings import Config
+from dialogs import DlgDelay
 
 
 def autoscroll(sbar, first, last):
@@ -153,6 +154,7 @@ class Face:
                                accelerator="Ctrl+Q", underline=1)
         self.root.bind_all("<Control-q>", lambda x: self.on_delete())
         self.medit.add_command(label=_("Clear"), command=self.clear_list)
+        self.medit.add_command(label=_("Delay..."), command=self.ask_delay)
         sel_sites = self.cfg.get("sites", set())
         self.sites = [i + (BooleanVar(),) for i in get_sites()]
         for site, name, bvar in self.sites:
@@ -223,6 +225,12 @@ class Face:
                 self.remember[curinfo]["folder"] = dname
             else:
                 self.dirname.set(dname)
+
+    def ask_delay(self, evt=None):
+        cfg = {"delay": "0"}
+        DlgDelay(self.root, _("Delay time"), cfg=cfg)
+        if cfg["OK button"]:
+            self.loader.set_delay(cfg["delay"])
 
     def del_page(self, evt=None):
         if type(evt) == str:
