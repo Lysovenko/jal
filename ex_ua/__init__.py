@@ -17,7 +17,7 @@ EX-UA data treatment
 
 from urllib.request import urlopen, Request
 from urllib.parse import urlencode
-from .parser import SearchParser, parse_dpage, InfoParser
+from .parser import SearchParser, parse_dpage, InfoParser, CatalogParser
 from hashlib import md5
 
 
@@ -30,14 +30,23 @@ def web_search(what):
         for i in sp.found:
             md5o = md5("/".join((i["site"], i["page"])).encode("utf8"))
             i["hash"] = md5o.hexdigest()
-        return sp.found
+        return list(sp.found)
     return []
 
 
 def get_datapage(page):
     r = Request("http://www.ex.ua" + page)
     o = urlopen(r)
-    files, info = parse_dpage(o.read().decode())
+    html_text = o.read().decode()
+    o.close()
+    files, info = parse_dpage(html_text)
     if info:
         info = InfoParser(info).text
-    return files, info
+    if files:
+        return files, info, "Files"
+    cat_par = CatalogParser(html_text)
+    found = list(cat_par.found)
+    for i in found:
+            md5o = md5("/".join((i["site"], i["page"])).encode("utf8"))
+            i["hash"] = md5o.hexdigest()
+    return found, list(cat_par.text), "Catalog"

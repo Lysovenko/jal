@@ -61,6 +61,71 @@ class SearchParser(HTMLParser):
                 self.curdata["title"] = data
 
 
+class CatalogParser(HTMLParser):
+    "parses  Ex-ua catalog"
+    def __init__(self, data):
+        di = {}
+        if hexversion >= 0x030200f0:
+            di["strict"] = False
+        HTMLParser.__init__(self, **di)
+        self.text = []
+        self.curtags = []
+        self.found = []
+        self.is_topen = False
+        self.is_aopen = False
+        self.parse_info = False
+        self.curdata = {}
+        self.feed(data)
+        self.close()
+
+    def handle_starttag(self, tag, attrs):
+        dattrs = dict(attrs)
+        if self.parse_info:
+            if tag == "h1":
+                self.curtags.append(tag)
+            if tag == "p":
+                self.text.append(("\n    ", ()))
+            if tag == "br":
+                self.text.append(("\n", ()))
+        if tag == "td" and dattrs.get("valign") == "top":
+            self.parse_info = True
+        if tag == "table":
+            if dattrs.get("class") == "include_0":
+                self.is_topen = True
+        if self.is_topen:
+            if tag == "a":
+                href = dattrs.get("href", "")
+                if "?" in href:
+                    href = href[:href.find("?")]
+                if href.startswith("/") and href[1:].isdigit():
+                    self.curdata["page"] = href
+                    self.curdata["site"] = "ex-ua"
+                    self.is_aopen = True
+
+    def handle_endtag(self, tag):
+        if self.curtags and tag == self.curtags[-1] and self.parse_info:
+            self.curtags.pop(-1)
+        if tag == "table":
+            self.is_topen = False
+        if tag == "td":
+            self.parse_info = False
+            if self.curdata:
+                self.curdata["title"] = self.curdata.get("title", "No title")
+                self.found.append(self.curdata)
+                self.curdata = {}
+        if tag == "a":
+            self.is_aopen = False
+
+    def handle_data(self, data):
+        if self.parse_info:
+            self.text.append((" ".join(data.split()), tuple(self.curtags)))
+        if self.is_aopen:
+            try:
+                self.curdata["title"] += data
+            except KeyError:
+                self.curdata["title"] = data
+
+
 _MEDIA_TYPES = {"video": "flv", "audio": "mp3"}
 
 

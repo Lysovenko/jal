@@ -164,19 +164,22 @@ class Face:
 
     def search(self, evt=None):
         self.sstatus(_("Wait..."))
-        pages = self.pages
         sr = web_search(
             self.entry.get(), {i[0] for i in self.sites if i[2].get()})
         if sr is None:
             return
-        for i in sr:
+        self.insert_pages(sr)
+
+    def insert_pages(self, pages, where=""):
+        spages = self.pages
+        for i in pages:
             h = i["hash"]
-            if h not in pages:
-                self.tree.insert("", "end", h, text=i["title"],
+            if h not in spages:
+                self.tree.insert(where, "end", h, text=i["title"],
                                  tags=("page",))
-                pages[h] = {"entered": False}
-                pages[h]["site"] = i["site"]
-                pages[h]["page"] = i["page"]
+                spages[h] = {"entered": False}
+                spages[h]["site"] = i["site"]
+                spages[h]["page"] = i["page"]
         self.sstatus(_("OK"))
 
     def remember_pg(self, evt=None):
@@ -267,27 +270,36 @@ class Face:
         if not self.pages[iid]["entered"]:
             self.pages[iid]["entered"] = True
             try:
-                files, info = get_datapage(
+                items, info, ptype = get_datapage(
                     self.pages[iid]["site"], self.pages[iid]["page"])
             except Exception as err:
                 self.sstatus(_("Error: {0}").format(err))
                 return
-            if files:
+            if ptype == "Files":
+                self.deflate_datapage(items, info, iid)
+            if ptype == "Catalog":
+                self.insert_pages(items, iid)
                 if info:
                     self.pages[iid]["info"] = info
                     self.text_info(iid)
-                tids = []
-                for u, f in files:
-                    tid = self.tree.insert(iid, "end", text=f, tags=("file",))
-                    self.ufid.append((u, f, tid, iid))
-                    tids.append(tid)
-                self.pages[iid]["contains"] = tids
-                self.sstatus(_("OK"))
-            else:
-                self.del_page(iid)
-                self.sstatus(_("Bad item detected and destroyed"))
         else:
             self.text_info(iid)
+
+    def deflate_datapage(self, items, info, iid):
+        if items:
+            if info:
+                self.pages[iid]["info"] = info
+                self.text_info(iid)
+            tids = []
+            for u, f in items:
+                tid = self.tree.insert(iid, "end", text=f, tags=("file",))
+                self.ufid.append((u, f, tid, iid))
+                tids.append(tid)
+            self.pages[iid]["contains"] = tids
+            self.sstatus(_("OK"))
+        else:
+            self.del_page(iid)
+            self.sstatus(_("Bad item detected and destroyed"))
 
     def text_info(self, iid):
         if self.text_curinfo != iid:
@@ -308,8 +320,6 @@ class Face:
         for i in self.ufid:
             if i[2] in sel:
                 ufids.append(i)
-        nfiles = len(ufids)
-        sis = self.sstatus
         ddir = self.dirname.get()
         for t in ufids:
             iid = t[3]
